@@ -1,0 +1,1100 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PIURA-1 | Mission Control V3</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#02030a;
+    color:white;
+    font-family:Arial,sans-serif;
+    overflow:hidden;
+}
+
+/* =========================
+   FONDO
+========================= */
+
+.space{
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at 50% 100%,#101b45 0%,#030510 45%,#010207 100%);
+}
+
+.stars{
+    position:absolute;
+    inset:-100%;
+    background-image:
+    radial-gradient(white 1px,transparent 1px),
+    radial-gradient(#91a9ff 1px,transparent 1px);
+    background-size:55px 55px,95px 95px;
+    animation:stars 12s linear infinite;
+}
+
+@keyframes stars{
+    from{
+        transform:translateY(0);
+    }
+    to{
+        transform:translateY(500px);
+    }
+}
+
+/* =========================
+   INTERFAZ
+========================= */
+
+.interface{
+    position:relative;
+    width:100%;
+    height:100vh;
+    z-index:5;
+    padding:15px;
+}
+
+header{
+    text-align:center;
+}
+
+header h1{
+    margin:5px 0;
+    font-size:34px;
+    letter-spacing:6px;
+    text-shadow:0 0 20px #698cff;
+}
+
+header p{
+    margin:0;
+    color:#8199d4;
+    font-size:11px;
+    letter-spacing:3px;
+}
+
+/* =========================
+   MENU
+========================= */
+
+#menu{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(90%,500px);
+    text-align:center;
+    padding:30px;
+    background:rgba(4,8,20,.9);
+    border:1px solid #304889;
+    border-radius:20px;
+    box-shadow:0 0 50px rgba(70,100,255,.2);
+}
+
+#menu h2{
+    font-size:25px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin:7px 0;
+    border:1px solid #536db4;
+    border-radius:10px;
+    background:#101c3c;
+    color:white;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#1d3269;
+    box-shadow:0 0 20px rgba(100,140,255,.5);
+}
+
+select{
+    width:100%;
+    padding:13px;
+    border-radius:10px;
+    background:#071022;
+    color:white;
+    border:1px solid #40558e;
+}
+
+/* =========================
+   CUENTA REGRESIVA
+========================= */
+
+#countdown{
+    position:absolute;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    font-size:100px;
+    font-weight:bold;
+    text-shadow:0 0 40px #6f91ff;
+}
+
+.countAnim{
+    animation:count .9s ease;
+}
+
+@keyframes count{
+    0%{
+        transform:scale(2);
+        opacity:0;
+    }
+
+    50%{
+        transform:scale(1);
+        opacity:1;
+    }
+
+    100%{
+        transform:scale(.8);
+        opacity:0;
+    }
+}
+
+/* =========================
+   MISION
+========================= */
+
+#mission{
+    display:none;
+    position:absolute;
+    inset:0;
+}
+
+.missionTitle{
+    position:absolute;
+    top:85px;
+    left:20px;
+    background:rgba(3,7,18,.75);
+    padding:12px 16px;
+    border-radius:10px;
+    border:1px solid #334c8d;
+}
+
+.missionTitle strong{
+    color:#6fa0ff;
+}
+
+/* =========================
+   TIERRA
+========================= */
+
+.earth{
+    position:absolute;
+    left:50%;
+    bottom:-230px;
+    transform:translateX(-50%);
+    width:470px;
+    height:470px;
+    border-radius:50%;
+    background:
+    radial-gradient(circle at 35% 30%,#4b91ff,#16428f 45%,#06132e 75%);
+    box-shadow:
+    0 -20px 80px rgba(70,130,255,.8),
+    inset -50px -50px 100px rgba(0,0,0,.7);
+}
+
+/* =========================
+   NAVE
+========================= */
+
+.ship{
+    position:absolute;
+    left:50%;
+    bottom:270px;
+    transform:translateX(-50%);
+    font-size:65px;
+    filter:drop-shadow(0 0 20px #9dbbff);
+    z-index:10;
+}
+
+.engine{
+    position:absolute;
+    width:20px;
+    height:80px;
+    left:23px;
+    top:58px;
+    border-radius:50%;
+    background:linear-gradient(#fff5a8,#ff8c3a,transparent);
+    filter:blur(3px);
+    animation:flame .12s infinite alternate;
+}
+
+@keyframes flame{
+    from{
+        transform:scaleY(.7);
+    }
+
+    to{
+        transform:scaleY(1.2);
+    }
+}
+
+/* =========================
+   VUELO
+========================= */
+
+.flying{
+    animation:fly 8s ease-in-out forwards;
+}
+
+@keyframes fly{
+
+    0%{
+        bottom:270px;
+    }
+
+    30%{
+        bottom:55%;
+    }
+
+    60%{
+        bottom:70%;
+        left:58%;
+    }
+
+    100%{
+        bottom:78%;
+        left:70%;
+    }
+}
+
+/* =========================
+   ASTEROIDE
+========================= */
+
+.asteroid{
+    position:absolute;
+    font-size:45px;
+    right:-80px;
+    top:45%;
+    display:none;
+}
+
+.asteroid.active{
+    display:block;
+    animation:asteroidMove 4s linear forwards;
+}
+
+@keyframes asteroidMove{
+    from{
+        right:-80px;
+        transform:rotate(0deg);
+    }
+
+    to{
+        right:110%;
+        transform:rotate(720deg);
+    }
+}
+
+/* =========================
+   PANEL
+========================= */
+
+.panel{
+    position:absolute;
+    right:15px;
+    top:85px;
+    width:260px;
+    background:rgba(3,7,18,.86);
+    border:1px solid #30467e;
+    border-radius:15px;
+    padding:15px;
+}
+
+.data{
+    display:flex;
+    justify-content:space-between;
+    padding:7px 0;
+    border-bottom:1px solid rgba(100,120,180,.15);
+}
+
+.good{
+    color:#63efaa;
+}
+
+.warning{
+    color:#ffd166;
+}
+
+.danger{
+    color:#ff6e6e;
+}
+
+/* =========================
+   ALERTA
+========================= */
+
+#alert{
+    position:absolute;
+    left:50%;
+    top:22%;
+    transform:translateX(-50%);
+    width:min(90%,600px);
+    text-align:center;
+    padding:20px;
+    background:#701d1d;
+    border:1px solid #ff6868;
+    border-radius:15px;
+    box-shadow:0 0 40px rgba(255,50,50,.5);
+    display:none;
+    z-index:50;
+}
+
+#alert h2{
+    margin:0 0 8px;
+}
+
+/* =========================
+   DECISION
+========================= */
+
+#decision{
+    position:absolute;
+    left:50%;
+    bottom:30px;
+    transform:translateX(-50%);
+    width:min(90%,500px);
+    padding:18px;
+    background:rgba(4,8,20,.95);
+    border:1px solid #596fae;
+    border-radius:15px;
+    text-align:center;
+    display:none;
+    z-index:60;
+}
+
+/* =========================
+   MENSAJE
+========================= */
+
+#message{
+    position:absolute;
+    left:50%;
+    bottom:25px;
+    transform:translateX(-50%);
+    padding:12px 20px;
+    background:rgba(3,7,18,.9);
+    border:1px solid #334c8d;
+    border-radius:10px;
+    min-width:280px;
+    text-align:center;
+}
+
+/* =========================
+   FINAL
+========================= */
+
+#final{
+    display:none;
+    position:absolute;
+    inset:0;
+    background:rgba(1,3,10,.96);
+    z-index:100;
+    align-items:center;
+    justify-content:center;
+}
+
+.finalBox{
+    width:min(90%,500px);
+    padding:30px;
+    text-align:center;
+    background:#060b1c;
+    border:1px solid #526baa;
+    border-radius:20px;
+    box-shadow:0 0 50px rgba(80,110,255,.25);
+}
+
+.success{
+    color:#69f0ac;
+    font-size:28px;
+}
+
+@media(max-width:700px){
+
+    .panel{
+        width:190px;
+        font-size:12px;
+    }
+
+    .earth{
+        width:330px;
+        height:330px;
+        bottom:-150px;
+    }
+
+    .ship{
+        font-size:48px;
+    }
+
+    header h1{
+        font-size:25px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="space">
+    <div class="stars"></div>
+</div>
+
+<div class="interface">
+
+<header>
+    <h1>🚀 PIURA-1</h1>
+    <p>ADVANCED MISSION CONTROL</p>
+</header>
+
+<!-- MENU -->
+
+<div id="menu">
+
+    <h2>🛰️ CENTRO DE CONTROL</h2>
+
+    <p>
+        Simulación interactiva de misión espacial
+    </p>
+
+    <select id="destination">
+
+        <option value="moon">
+            🌕 MISIÓN LUNAR
+        </option>
+
+        <option value="mars">
+            🔴 MISIÓN MARCIANA
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button onclick="launch()">
+        🚀 INICIAR SECUENCIA
+    </button>
+
+</div>
+
+
+<!-- CUENTA REGRESIVA -->
+
+<div id="countdown">
+    10
+</div>
+
+
+<!-- MISION -->
+
+<div id="mission">
+
+    <div class="missionTitle">
+        MISIÓN: <strong id="missionName">
+        LUNA
+        </strong>
+    </div>
+
+    <div class="earth"></div>
+
+    <div id="ship" class="ship">
+
+        <div class="engine"></div>
+
+        🚀
+
+    </div>
+
+    <div id="asteroid" class="asteroid">
+        ☄️
+    </div>
+
+
+    <!-- PANEL -->
+
+    <div class="panel">
+
+        <div class="data">
+            <span>ALTITUD</span>
+            <strong id="altitude">0 km</strong>
+        </div>
+
+        <div class="data">
+            <span>VELOCIDAD</span>
+            <strong id="speed">0 km/h</strong>
+        </div>
+
+        <div class="data">
+            <span>COMBUSTIBLE</span>
+            <strong id="fuel" class="good">
+                100%
+            </strong>
+        </div>
+
+        <div class="data">
+            <span>ENERGÍA</span>
+            <strong id="energy" class="good">
+                100%
+            </strong>
+        </div>
+
+        <div class="data">
+            <span>SEÑAL</span>
+            <strong id="signal" class="good">
+                100%
+            </strong>
+        </div>
+
+        <div class="data">
+            <span>RUMBO</span>
+            <strong id="heading">
+                90°
+            </strong>
+        </div>
+
+        <br>
+
+        <button onclick="accelerate()">
+            🚀 ACELERAR
+        </button>
+
+        <button onclick="changeHeading()">
+            🧭 CAMBIAR RUMBO
+        </button>
+
+        <button onclick="shield()">
+            🛡️ ESCUDO
+        </button>
+
+    </div>
+
+
+    <div id="message">
+        📡 Telemetría nominal
+    </div>
+
+
+    <!-- ALERTA -->
+
+    <div id="alert">
+
+        <h2>🚨 ALERTA</h2>
+
+        <div id="alertText">
+            OBJETO DETECTADO
+        </div>
+
+    </div>
+
+
+    <!-- DECISION -->
+
+    <div id="decision">
+
+        <strong>
+            ☄️ OBJETO EN TRAYECTORIA
+        </strong>
+
+        <p>
+            Selecciona una acción:
+        </p>
+
+        <button onclick="avoidAsteroid()">
+            🧭 CAMBIAR TRAYECTORIA
+        </button>
+
+        <button onclick="useShield()">
+            🛡️ ACTIVAR ESCUDO
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- FINAL -->
+
+<div id="final">
+
+    <div class="finalBox">
+
+        <div class="success">
+            🏆 MISIÓN COMPLETADA
+        </div>
+
+        <h2>
+            PIURA-1
+        </h2>
+
+        <p>
+            🎯 Objetivo alcanzado.
+        </p>
+
+        <p>
+            📡 Comunicación establecida.
+        </p>
+
+        <p>
+            🚀 Nave en condiciones operativas.
+        </p>
+
+        <button onclick="location.reload()">
+            🔄 NUEVA MISIÓN
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   VARIABLES
+========================= */
+
+let fuel=100;
+let energy=100;
+let signal=100;
+
+let altitude=0;
+let speed=0;
+let heading=90;
+
+let missionTime=0;
+let asteroidHandled=false;
+
+let destination="Luna";
+
+
+/* =========================
+   LANZAMIENTO
+========================= */
+
+function launch(){
+
+    destination =
+    document.getElementById(
+        "destination"
+    ).value === "moon"
+    ? "Luna"
+    : "Marte";
+
+    document.getElementById(
+        "missionName"
+    ).innerText =
+    destination.toUpperCase();
+
+    document.getElementById(
+        "menu"
+    ).style.display="none";
+
+    const countdown =
+    document.getElementById(
+        "countdown"
+    );
+
+    countdown.style.display="flex";
+
+    let number=10;
+
+    countdown.innerText=number;
+
+    const timer=setInterval(()=>{
+
+        number--;
+
+        countdown.innerText=
+        number;
+
+        countdown.classList.remove(
+            "countAnim"
+        );
+
+        void countdown.offsetWidth;
+
+        countdown.classList.add(
+            "countAnim"
+        );
+
+        if(number<=0){
+
+            clearInterval(timer);
+
+            countdown.style.display=
+            "none";
+
+            startMission();
+
+        }
+
+    },900);
+
+}
+
+
+/* =========================
+   INICIAR MISION
+========================= */
+
+function startMission(){
+
+    document.getElementById(
+        "mission"
+    ).style.display="block";
+
+    const ship =
+    document.getElementById(
+        "ship"
+    );
+
+    ship.classList.add(
+        "flying"
+    );
+
+    message(
+        "🔥 DESPEGUE CONFIRMADO"
+    );
+
+    let interval=setInterval(()=>{
+
+        missionTime++;
+
+        altitude +=
+        Math.floor(
+            Math.random()*12
+        )+5;
+
+        speed +=
+        Math.floor(
+            Math.random()*2500
+        )+1000;
+
+        fuel -=
+        Math.random()*1.2;
+
+        energy -=
+        Math.random()*.5;
+
+        signal -=
+        Math.random()*.2;
+
+        update();
+
+        if(
+            missionTime===5 &&
+            !asteroidHandled
+        ){
+
+            asteroidEvent();
+
+        }
+
+        if(missionTime>=15){
+
+            clearInterval(interval);
+
+            finishMission();
+
+        }
+
+    },1000);
+
+}
+
+
+/* =========================
+   ACTUALIZAR
+========================= */
+
+function update(){
+
+    fuel=Math.max(0,fuel);
+    energy=Math.max(0,energy);
+    signal=Math.max(0,signal);
+
+    document.getElementById(
+        "altitude"
+    ).innerText=
+    Math.round(altitude)+" km";
+
+    document.getElementById(
+        "speed"
+    ).innerText=
+    Math.round(speed)+" km/h";
+
+    document.getElementById(
+        "fuel"
+    ).innerText=
+    Math.round(fuel)+"%";
+
+    document.getElementById(
+        "energy"
+    ).innerText=
+    Math.round(energy)+"%";
+
+    document.getElementById(
+        "signal"
+    ).innerText=
+    Math.round(signal)+"%";
+
+    document.getElementById(
+        "heading"
+    ).innerText=
+    Math.round(heading)+"°";
+
+}
+
+
+/* =========================
+   ACELERAR
+========================= */
+
+function accelerate(){
+
+    if(fuel<5){
+
+        showAlert(
+            "COMBUSTIBLE INSUFICIENTE"
+        );
+
+        return;
+
+    }
+
+    speed += 15000;
+
+    fuel -= 7;
+
+    energy -= 2;
+
+    message(
+        "🚀 PROPULSIÓN AUMENTADA"
+    );
+
+    update();
+
+}
+
+
+/* =========================
+   CAMBIAR RUMBO
+========================= */
+
+function changeHeading(){
+
+    heading +=
+    Math.floor(
+        Math.random()*61
+    )-30;
+
+    if(heading<0)
+        heading+=360;
+
+    if(heading>=360)
+        heading-=360;
+
+    energy-=4;
+
+    message(
+        "🧭 NUEVO RUMBO "+
+        Math.round(heading)+"°"
+    );
+
+    update();
+
+}
+
+
+/* =========================
+   ESCUDO
+========================= */
+
+function shield(){
+
+    if(energy<10){
+
+        showAlert(
+            "ENERGÍA INSUFICIENTE"
+        );
+
+        return;
+
+    }
+
+    energy-=10;
+
+    message(
+        "🛡️ ESCUDO REFORZADO"
+    );
+
+    update();
+
+}
+
+
+/* =========================
+   ASTEROIDE
+========================= */
+
+function asteroidEvent(){
+
+    asteroidHandled=true;
+
+    const asteroid =
+    document.getElementById(
+        "asteroid"
+    );
+
+    asteroid.classList.add(
+        "active"
+    );
+
+    showAlert(
+        "☄️ OBJETO EN TRAYECTORIA"
+    );
+
+    setTimeout(()=>{
+
+        document.getElementById(
+            "decision"
+        ).style.display="block";
+
+    },1200);
+
+}
+
+
+/* =========================
+   EVITAR ASTEROIDE
+========================= */
+
+function avoidAsteroid(){
+
+    heading += 35;
+
+    energy -= 8;
+
+    document.getElementById(
+        "decision"
+    ).style.display="none";
+
+    document.getElementById(
+        "asteroid"
+    ).style.display="none";
+
+    message(
+        "🧭 TRAYECTORIA MODIFICADA"
+    );
+
+    update();
+
+}
+
+
+/* =========================
+   ESCUDO CONTRA ASTEROIDE
+========================= */
+
+function useShield(){
+
+    energy -= 15;
+
+    document.getElementById(
+        "decision"
+    ).style.display="none";
+
+    document.getElementById(
+        "asteroid"
+    ).style.display="none";
+
+    showAlert(
+        "🛡️ IMPACTO BLOQUEADO"
+    );
+
+    setTimeout(()=>{
+
+        document.getElementById(
+            "alert"
+        ).style.display="none";
+
+    },1500);
+
+    update();
+
+}
+
+
+/* =========================
+   ALERTA
+========================= */
+
+function showAlert(text){
+
+    document.getElementById(
+        "alertText"
+    ).innerText=text;
+
+    document.getElementById(
+        "alert"
+    ).style.display="block";
+
+    setTimeout(()=>{
+
+        document.getElementById(
+            "alert"
+        ).style.display="none";
+
+    },3000);
+
+}
+
+
+/* =========================
+   MENSAJE
+========================= */
+
+function message(text){
+
+    document.getElementById(
+        "message"
+    ).innerText=text;
+
+}
+
+
+/* =========================
+   FINAL
+========================= */
+
+function finishMission(){
+
+    document.getElementById(
+        "mission"
+    ).style.display="none";
+
+    document.getElementById(
+        "final"
+    ).style.display="flex";
+
+}
+
+</script>
+
+</body>
+</html>
